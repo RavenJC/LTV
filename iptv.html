@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>M3U8 Player</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      background: #121212;
+      color: white;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    video {
+      width: 80%;
+      max-width: 800px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+
+    .channel-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .channel {
+      background: #1f1f1f;
+      padding: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 120px;
+      transition: 0.2s;
+    }
+
+    .channel:hover {
+      background: #333;
+    }
+
+    .channel img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .channel-name {
+      margin-top: 8px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h2>Web M3U8 Player</h2>
+  <video id="video" controls></video>
+
+  <div class="channel-list" id="channelList"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    const video = document.getElementById('video');
+    const channelList = document.getElementById('channelList');
+
+    const channels = [
+      {
+        name: "Cinema One PH",
+        url: "http://ott.udptv.net/stream/iptv/cinemaoneph/master.m3u8?u=udpteam@djdoolky76&p=47beb9b696976df8054d42d9f552d489d1f856298f1aa9aca6143fcb4b5deb1a",
+        logo: "https://i.imgur.com/hJ6MBiA.png"
+      },
+      {
+        name: "Cinema One Global",
+        url: "http://ott.udptv.net/stream/iptv/cinemaoneglobal/master.m3u8?u=udpteam@djdoolky76&p=47beb9b696976df8054d42d9f552d489d1f856298f1aa9aca6143fcb4b5deb1a",
+        logo: "https://i.imgur.com/hJ6MBiA.png"
+      },
+      {
+        name: "PBO",
+        url: "http://ott.udptv.net/stream/iptv/pbo/master.m3u8?u=udpteam@djdoolky76&p=47beb9b696976df8054d42d9f552d489d1f856298f1aa9aca6143fcb4b5deb1a",
+        logo: "https://i.imgur.com/oOMAyoX.png"
+      },
+      {
+        name: "GMA",
+        url: "https://ott.udptv.net/stream/iptv/gma/master.m3u8?u=udpteam@djdoolky76&p=47beb9b696976df8054d42d9f552d489d1f856298f1aa9aca6143fcb4b5deb1a",
+        logo: "https://i.imgur.com/Cu1tAY8.png"
+      },
+      {
+        name: "TV5",
+        url: "http://ott.udptv.net/stream/iptv/tv5hd/master.m3u8?u=udpteam@djdoolky76&p=47beb9b696976df8054d42d9f552d489d1f856298f1aa9aca6143fcb4b5deb1a",
+        logo: "https://i.imgur.com/jsCBRq0.png"
+      },
+      {
+        name: "Viva Cinema",
+        url: "http://ott.udptv.net/stream/iptv/vivacinema/master.m3u8?u=udpteam@djdoolky76&p=47beb9b696976df8054d42d9f552d489d1f856298f1aa9aca6143fcb4b5deb1a",
+        logo: "https://i.imgur.com/5jn4U88.png"
+      }
+    ];
+
+    function playStream(url) {
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+      } else {
+        alert("Your browser does not support M3U8 playback.");
+      }
+    }
+
+    channels.forEach(channel => {
+      const div = document.createElement('div');
+      div.className = 'channel';
+      div.innerHTML = `
+        <img src="${channel.logo}" alt="${channel.name} logo" />
+        <div class="channel-name">${channel.name}</div>
+      `;
+      div.onclick = () => playStream(channel.url);
+      channelList.appendChild(div);
+    });
+
+    // Load the first channel by default
+    playStream(channels[0].url);
+  </script>
+</body>
+</html>
